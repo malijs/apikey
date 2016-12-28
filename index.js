@@ -3,7 +3,7 @@ const auth = require('mali-metadata-auth')
 /**
  * Mali API key authorization metadata middleware.
  * If the call has metadata with "authorization" string property with "apikey <key>" then specified function is called
- * @module mali-bearer
+ * @module mali-apikey
  *
  * @param  {Options} options
  * @param  {String} options.keyField Optional key field within the authorization value to look for. Default: <code>"apikey"</code>
