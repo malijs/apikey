@@ -1,4 +1,5 @@
 const auth = require('mali-metadata-auth')
+const create = require('create-grpc-error')
 
 /**
  * Mali API key authorization metadata middleware.
@@ -7,8 +8,15 @@ const auth = require('mali-metadata-auth')
  *
  * @param  {Options} options
  * @param  {String} options.keyField Optional key field within the authorization value to look for. Default: <code>"apikey"</code>
- * @param  {String} options.error optional string for errors to throw in case authorization is not present
- *                               Default: <code>"Not Authorized"</code>
+ * @param  {String|Object|Function} options.error optional Error creation options.
+ *                                                If <code>String</code> the message for Error to throw in case
+ *                                                authorization is not present.
+ *                                                If <code>Object</code> the error options with <code>message</code>,
+ *                                                <code>code</code>, and <code>metadata</code> properties. See <code>create-grpc-error</code>
+ *                                                module.
+ *                                                If <code>Function</code> a function with signature <code>(ctx)</code>
+ *                                                called to create an error. Must return an <code>Error</code> instanse.
+ *                                                Default: <code>"Not Authorized"</code>
  * @param  {Function} fn The middleware function to execute with signature <code>(key, ctx, next)</code>
  *
  * @example
@@ -25,8 +33,13 @@ module.exports = function (options, fn) {
     options = {}
   }
 
-  if (typeof options.error !== 'string' || !options.error) {
-    options.error = 'Not Authorized'
+  let errFn = errorGenerator
+  if (typeof options.error === 'string') {
+    errFn = () => errorGenerator(options.error)
+  } else if (typeof options.error === 'object') {
+    errFn = () => create(options.error.message || 'Not Authorized', options.error.code, options.error.metadata)
+  } else if (typeof options.error === 'function') {
+    errFn = options.error
   }
 
   if (typeof options.keyField !== 'string' || !options.keyField) {
@@ -34,10 +47,10 @@ module.exports = function (options, fn) {
   }
 
   return auth(options, (authorization, ctx, next) => {
-    if (!authorization) throw new Error(options.error)
+    if (!authorization) throw errFn()
 
     const parts = authorization.split(' ')
-    if (parts.length !== 2) throw new Error(options.error)
+    if (parts.length !== 2) throw errFn()
 
     const scheme = parts[0]
     const credentials = parts[1]
@@ -48,8 +61,12 @@ module.exports = function (options, fn) {
       key = credentials
     }
 
-    if (!key) throw new Error(options.error)
+    if (!key) throw errFn()
 
     return fn(key, ctx, next)
   })
+}
+
+function errorGenerator (message) {
+  return new Error(message || 'Not Authorized')
 }
