@@ -1,5 +1,4 @@
-const auth = require('mali-metadata-auth')
-const create = require('create-grpc-error')
+const fieldAuth = require('mali-metadata-field-auth')
 
 /**
  * Mali API key authorization metadata middleware.
@@ -33,40 +32,11 @@ module.exports = function (options, fn) {
     options = {}
   }
 
-  let errFn = errorGenerator
-  if (typeof options.error === 'string') {
-    errFn = () => errorGenerator(options.error)
-  } else if (typeof options.error === 'object') {
-    errFn = () => create(options.error.message || 'Not Authorized', options.error.code, options.error.metadata)
-  } else if (typeof options.error === 'function') {
-    errFn = options.error
+  let field = options.keyField
+  if (!field || typeof field !== 'string') {
+    field = 'apikey'
   }
+  delete options.keyField
 
-  if (typeof options.keyField !== 'string' || !options.keyField) {
-    options.keyField = 'apikey'
-  }
-
-  return auth(options, (authorization, ctx, next) => {
-    if (!authorization) throw errFn()
-
-    const parts = authorization.split(' ')
-    if (parts.length !== 2) throw errFn()
-
-    const scheme = parts[0]
-    const credentials = parts[1]
-
-    let key
-    const rstr = String.raw`^${options.keyField}$`
-    if (new RegExp(rstr, 'i').test(scheme)) {
-      key = credentials
-    }
-
-    if (!key) throw errFn()
-
-    return fn(key, ctx, next)
-  })
-}
-
-function errorGenerator (message) {
-  return new Error(message || 'Not Authorized')
+  return fieldAuth(field, options, fn)
 }
