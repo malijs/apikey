@@ -13,7 +13,7 @@ function getRandomInt (min, max) {
 }
 
 function getHostport (port) {
-  return '0.0.0.0:'.concat(port || getRandomInt(1000, 60000))
+  return '0.0.0.0:'.concat(port || getRandomInt(2000, 59000))
 }
 
 const PROTO_PATH = path.resolve(__dirname, './apikey.proto')
