@@ -1,5 +1,7 @@
 # mali-apikey
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/malijs/apikey.svg)](https://greenkeeper.io/)
+
 Mali API key metadata authorization middleware
 
 [![npm version](https://img.shields.io/npm/v/mali-apikey.svg?style=flat-square)](https://www.npmjs.com/package/mali-apikey)
