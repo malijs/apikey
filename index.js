@@ -1,9 +1,9 @@
-const fieldAuth = require('mali-metadata-field-auth')
+const fieldAuth = require('@malijs/metadata-field-auth')
 
 /**
  * Mali API key authorization metadata middleware.
  * If the call has metadata with "authorization" string property with "apikey <key>" then specified function is called
- * @module mali-apikey
+ * @module @malijs/apikey
  *
  * @param  {Options} options
  * @param  {String} options.keyField Optional key field within the authorization value to look for. Default: <code>"apikey"</code>
@@ -19,7 +19,7 @@ const fieldAuth = require('mali-metadata-field-auth')
  * @param  {Function} fn The middleware function to execute with signature <code>(key, ctx, next)</code>
  *
  * @example
- * const apikey = require('mali-apikey')
+ * const apikey = require('@malijs/apikey')
  *
  * app.use(apikey(async (key, ctx, next) => {
  *   console.log(key)

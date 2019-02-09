@@ -1,16 +1,15 @@
-# mali-apikey
+# @malijs/apikey
 
 Mali API key metadata authorization middleware
 
-[![npm version](https://img.shields.io/npm/v/mali-apikey.svg?style=flat-square)](https://www.npmjs.com/package/mali-apikey)
+[![npm version](https://img.shields.io/npm/v/@malijs/apikey.svg?style=flat-square)](https://www.npmjs.com/package/@malijs/apikey)
 [![build status](https://img.shields.io/travis/malijs/apikey/master.svg?style=flat-square)](https://travis-ci.org/malijs/apikey)
-[![Greenkeeper badge](https://badges.greenkeeper.io/malijs/apikey.svg)](https://greenkeeper.io/)
 
 ## API
 
-<a name="module_mali-apikey"></a>
+<a name="module_@malijs/apikey"></a>
 
-### mali-apikey
+### @malijs/apikey
 Mali API key authorization metadata middleware.
 If the call has metadata with "authorization" string property with "apikey <key>" then specified function is called
 
@@ -23,16 +22,14 @@ If the call has metadata with "authorization" string property with "apikey <key>
 | fn | <code>function</code> | The middleware function to execute with signature <code>(key, ctx, next)</code> |
 
 **Example**  
-
 ```js
-const apikey = require('mali-apikey')
+const apikey = require('@malijs/apikey')
 
 app.use(apikey(async (key, ctx, next) => {
   console.log(key)
   await next()
 })
 ```
-
 ## License
 
   Apache-2.0
